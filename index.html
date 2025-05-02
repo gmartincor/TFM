@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mejora de TimeOverflow: Bancos de tiempo más accesibles y colaborativos</title>
+  <style>
+    html, body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      background-color: #f5f5f5;
+      height: 100%;
+      overflow: hidden; /* Evitar scroll en la página */
+    }
+    .slide-container {
+      max-width: 900px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-radius: 8px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none; /* Ocultar todas las diapositivas por defecto */
+      width: 80%; /* Tamaño relativo para mejor adaptabilidad */
+      max-height: 80vh; /* Altura máxima para evitar desbordamiento */
+      overflow-y: auto; /* Permitir scroll dentro de la diapositiva si es necesario */
+    }
+    .slide-container.active {
+      display: block; /* Mostrar solo la diapositiva activa */
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .slide-number {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+    h2 {
+      color: #3498db;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
+    ul {
+      padding-left: 25px;
+    }
+    li {
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .cover {
+      text-align: center;
+      padding: 60px 40px;
+      background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+    }
+    .cover h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    .cover p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 40px;
+    }
+    .cover .author {
+      font-size: 20px;
+      margin-top: 40px;
+      color: #555;
+    }
+    .two-column {
+      display: flex;
+      gap: 30px;
+    }
+    .column {
+      flex: 1;
+    }
+    .agenda-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .agenda-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 15px;
+      background-color: #3498db;
+      color: white;
+      font-size: 18px;
+    }
+    .image-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      opacity: 0; /* Inicialmente invisible */
+    }
+    .slide-container.active .image-container {
+      animation: imageAppear 1s ease-in-out forwards;
+      animation-delay: 0.3s; /* Pequeño retraso después de que aparece la diapositiva */
+    }
+    @keyframes imageAppear {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .image-placeholder {
+      width: 450px;
+      height: 300px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+    }
+    .conclusion-item {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      margin-bottom: 15px;
+      border-radius: 0 4px 4px 0;
+    }
+    .conclusion-title {
+      font-weight: bold;
+      color: #2980b9;
+      margin-bottom: 5px;
+    }
+    .demo-slide {
+      text-align: center;
+      padding: 80px 40px;
+    }
+    .demo-slide h2 {
+      margin-bottom: 40px;
+    }
+    .thanks-slide {
+      text-align: center;
+      padding: 100px 40px;
+      background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+    }
+    .thanks-slide h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+    .process-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .step-number {
+      min-width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #3498db;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-weight: bold;
+    }
+    .diagram-container {
+      margin: 30px auto;
+      max-width: 700px;
+      text-align: center;
+    }
+    .bank-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .bank {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #e1f0fa;
+      border: 2px solid #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+    }
+    .arrow {
+      width: 180px;
+      height: 40px;
+      background-color: #f0f0f0;
+      position: relative;
+      margin: 0 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 12px;
+    }
+    .arrow:after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 10px solid #f0f0f0;
+    }
+    .highlighted {
+      font-weight: bold;
+      color: #2980b9;
+    }
+    /* Nuevos estilos para navegación */
+    .nav-buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 1000;
+    }
+    .nav-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .nav-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.1);
+    }
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 5px;
+      background-color: #3498db;
+      transition: width 0.3s ease;
+      z-index: 1000;
+    }
+    /* Mejora para imágenes */
+    .real-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    /* Animación para listas */
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    li.animated {
+      animation: fadeInLeft 0.5s ease-in-out;
+      animation-fill-mode: both;
+    }
+    /* Estilo para tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      border-bottom: 1px dotted #3498db;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.9em;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* Modo oscuro */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    body.dark-mode {
+      background-color: #2c3e50;
+      color: #f5f5f5;
+    }
+    body.dark-mode .slide-container {
+      background-color: #34495e;
+      color: #ecf0f1;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    body.dark-mode h1 {
+      color: #ecf0f1;
+    }
+    body.dark-mode h2 {
+      color: #3498db;
+      border-bottom: 2px solid #2c3e50;
+    }
+
+    /* Estilos para el video y botón de pantalla completa */
+    .video-container {
+      margin: 20px auto;
+      position: relative;
+      width: 85%;
+    }
+    
+    .fullscreen-button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .fullscreen-button:hover {
+      background-color: #2980b9;
+    }
+    
+    /* Estilo para video en pantalla completa */
+    video:-webkit-full-screen {
+      width: 100%;
+      height: 100%;
+    }
+    
+    video:-moz-full-screen {
+      width: 100%;
+      height: 100%;
+    }
+    
+    video:fullscreen {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Control de navegación -->
+  <div class="progress-bar" id="progress-bar"></div>
+  <button class="dark-mode-toggle" id="dark-mode-toggle">🌓</button>
+  <div class="nav-buttons">
+    <button class="nav-button" id="prev-button">←</button>
+    <button class="nav-button" id="next-button">→</button>
+  </div>
+  
+  <!-- Slide 1: Cover -->
+  <div class="slide-container cover">
+    <h1>Mejora de TimeOverflow: Bancos de tiempo más accesibles y colaborativos</h1>
+    <div class="image-container">
+      <img src="apple-touch-icon-precomposed.png" alt="Logo TimeOverflow" class="real-image" style="max-height: 200px;">
+    </div>
+    <p>Trabajo Final de Máster</p>
+    <p class="author">Guillermo Martín Correa</p>
+    <p>Junio 2025</p>
+    <div class="slide-number">1</div>
+  </div>
+
+  <!-- Slide 2: Agenda -->
+  <div class="slide-container">
+    <h2>Agenda</h2>
+    <div style="margin-top: 30px;">
+      <div class="agenda-item">
+        <div class="agenda-icon">1</div>
+        <div>Motivación</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">2</div>
+        <div>Desarrollo del proyecto</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">3</div>
+        <div>Decisiones clave</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">4</div>
+        <div>Demostración práctica</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">5</div>
+        <div>Conclusiones y cierre</div>
+      </div>
+    </div>
+    <div class="slide-number">2</div>
+  </div>
+
+  <!-- Slide 3: ¿Qué es un Banco de Tiempo? -->
+  <div class="slide-container">
+    <h2>Contexto – Bancos de Tiempo</h2>
+    <div class="two-column">
+      <div class="column">
+        <ul>
+          <li>Comunidad de personas que intercambian servicios usando <span class="highlighted">tiempo como moneda</span>, no dinero.</li>
+          <li>"1 hora de ayuda = 1 crédito de tiempo". Por ejemplo: enseñas inglés 1 hora y ganas 1 hora para pedir otro servicio.</li>
+          <li>Fomenta la <span class="highlighted">colaboración comunitaria</span>: todos pueden ofrecer y recibir ayuda en igualdad, fortaleciendo redes de apoyo locales.</li>
+        </ul>
+      </div>
+      <div class="column">
+        <div class="image-container">
+          <img src="intercambio.png" alt="Intercambio de servicios en bancos de tiempo" class="real-image">
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">3</div>
+  </div>
+
+  <!-- Slide 4: ¿Qué es TimeOverflow? -->
+  <div class="slide-container">
+    <h2>La plataforma TimeOverflow</h2>
+    <div class="two-column">
+      <div class="column">
+        <ul>
+          <li>Plataforma web de <span class="highlighted">código abierto</span> para gestionar bancos de tiempo de forma eficiente.</li>
+          <li>Permite registrar horas intercambiadas, ofertas y demandas de servicios, y administrar miembros.</li>
+          <li>Uso real: Adoptada por múltiples comunidades de bancos de tiempo (especialmente en España) para coordinar intercambios sin ánimo de lucro.</li>
+          <li>Visión: Impulsar la economía colaborativa facilitando un software libre adaptable a distintas comunidades.</li>
+        </ul>
+      </div>
+      <div class="column">
+        <div class="image-container">
+          <img src="timeoverflow.png" alt="Interfaz de TimeOverflow" class="real-image">
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">4</div>
+  </div>
+
+  <!-- Slide 5: Motivación del Proyecto -->
+  <div class="slide-container">
+    <h2>¿Por qué mejorar TimeOverflow?</h2>
+    <div class="two-column">
+      <div class="column">
+        <h3>Problemas detectados</h3>
+        <ul>
+          <li><span class="highlighted">Accesibilidad limitada</span>: Personas mayores o con discapacidad encontraban barreras para usar la plataforma.</li>
+          <li><span class="highlighted">Bancos aislados</span>: Cada banco de tiempo en TimeOverflow funciona de forma independiente, sin opción de intercambio entre bancos distintos.</li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3>Oportunidades</h3>
+        <ul>
+          <li><span class="highlighted">Potencial sin explotar</span>: Mejorar estas áreas podía ampliar el impacto social de los bancos de tiempo, incluyendo a más personas y conectando comunidades antes desconectadas.</li>
+          <li><span class="highlighted">Economía colaborativa en auge</span>: Era una oportunidad de alinear la plataforma con las mejores prácticas actuales y objetivos sociales como los ODS.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-number">5</div>
+  </div>
+
+  <!-- Slide 6: Objetivos del Proyecto -->
+  <div class="slide-container">
+    <h2>Objetivos</h2>
+    <p><strong>Objetivo general:</strong> Mejorar TimeOverflow en accesibilidad y funcionalidad, optimizando la experiencia de usuario y permitiendo la interoperabilidad entre distintos bancos de tiempo.</p>
+    
+    <p><strong>Objetivos específicos:</strong></p>
+    <ol>
+      <li><span class="highlighted">Analizar</span> la plataforma actual: comprender la arquitectura y revisar cómo funcionan las transacciones hoy.</li>
+      <li><span class="highlighted">Diseñar</span> la función de transferencias entre bancos: estudiar la viabilidad y normas para intercambiar horas entre distintos bancos.</li>
+      <li><span class="highlighted">Implementar</span> mejoras de accesibilidad: aplicar estándares de diseño universal para que la plataforma sea usable por personas con discapacidad.</li>
+      <li><span class="highlighted">Implementar</span> las transferencias interbancarias: desarrollar el mecanismo que permita transferir horas de un banco a otro.</li>
+    </ol>
+    <div class="slide-number">6</div>
+  </div>
+
+  <!-- Slide 7: Enfoque y Metodología -->
+  <div class="slide-container">
+    <h2>Enfoque de desarrollo</h2>
+    <div class="two-column">
+      <div class="column">
+        <h3>Contribución vs. crear de cero</h3>
+        <ul>
+          <li>Se optó por <span class="highlighted">mejorar la plataforma existente</span> TimeOverflow en lugar de desarrollar una nueva.</li>
+          <li>Razón: TimeOverflow ya tiene una base de usuarios activa y una comunidad open-source.</li>
+        </ul>
+        
+        <h3>Metodología ágil e iterativa</h3>
+        <ul>
+          <li>Trabajo dividido en <span class="highlighted">sprints cortos</span> (2-4 semanas).</li>
+          <li>Al final de cada iteración, se revisan avances, se prueba lo implementado y se ajusta el plan.</li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3>Colaboración abierta</h3>
+        <ul>
+          <li>Uso de <span class="highlighted">GitHub</span> para gestionar el proyecto: issues públicas, revisión por pares de la comunidad.</li>
+        </ul>
+        
+        <h3>Validación con usuarios</h3>
+        <ul>
+          <li>Implicación de <span class="highlighted">coordinadores de bancos de tiempo reales</span> para probar las mejoras en etapas tempranas.</li>
+        </ul>
+        
+        <h3>Tecnologías empleadas</h3>
+        <ul>
+          <li><span class="highlighted">Ruby on Rails</span> (framework web principal de TimeOverflow).</li>
+          <li>HTML/CSS/JS para frontend, siguiendo los estándares ya establecidos.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-number">7</div>
+  </div>
+
+  <!-- Slide 8: Mejoras de Accesibilidad -->
+  <div class="slide-container">
+    <h2>Mejoras de Accesibilidad</h2>
+    <div class="two-column">
+      <div class="column">
+        <ul>
+          <li><span class="highlighted">Interfaz inclusiva</span>: Revisión del diseño UI para hacerlo más claro y sencillo. Se agregaron indicaciones y textos explicativos en funciones complejas.</li>
+          <li><span class="highlighted">Compatibilidad con asistentes</span>: Todos los nuevos componentes y páginas implementadas son compatibles con lectores de pantalla y dispositivos de asistencia.</li>
+          <li><span class="highlighted">Diseño adaptable</span>: La plataforma ahora responde mejor en distintos dispositivos y tamaños de pantalla (diseño responsive).</li>
+        </ul>
+      </div>
+      <div class="column">
+        <ul>
+          <li><span class="highlighted">Pruebas de usabilidad</span>: Se realizaron pruebas con personas de perfiles variados (edades, capacidades tecnológicas).</li>
+          <li><span class="highlighted">Cumplimiento de estándares</span>: Las mejoras siguen pautas de accesibilidad web (WCAG 2.1 nivel AA), asegurando buenas prácticas en contraste de colores, tamaños de fuente legibles, navegación mediante teclado, etc.</li>
+        </ul>
+        <div class="image-container">
+          <div class="image-placeholder">
+            [Imagen: Elementos de accesibilidad implementados]
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">8</div>
+  </div>
+
+  <!-- Slide 9: Funcionalidad de Transferencias Interbancarias -->
+  <div class="slide-container">
+    <h2>Nueva Funcionalidad: Transferencias entre Bancos de Tiempo</h2>
+    <div class="diagram-container">
+      <h3>Proceso en 4 fases:</h3>
+      
+      <div class="bank-flow">
+        <div class="bank">Banco A</div>
+        <div class="arrow">Fase 1: Solicitud de alianza</div>
+        <div class="bank">Banco B</div>
+      </div>
+      
+      <div class="bank-flow">
+        <div class="bank">Miembro A</div>
+        <div class="arrow">Fase 2: Visualiza ofertas de B</div>
+        <div class="bank">Miembro B</div>
+      </div>
+      
+      <div class="bank-flow">
+        <div class="bank">Miembro A</div>
+        <div class="arrow">Fase 3: Solicitud de contacto</div>
+        <div class="bank">Miembro B</div>
+      </div>
+      
+      <div class="bank-flow">
+        <div class="bank">Miembro A</div>
+        <div class="arrow">Fase 4: Transferencia de 1h</div>
+        <div class="bank">Miembro B</div>
+      </div>
+    </div>
+    
+    <ul>
+      <li><span class="highlighted">Conexión entre bancos</span>: Sistema de "alianzas" entre bancos de tiempo.</li>
+      <li><span class="highlighted">Visibilidad compartida</span>: Miembros pueden ver ofertas y demandas del banco aliado.</li>
+      <li><span class="highlighted">Privacidad protegida</span>: Datos personales solo se comparten con consentimiento.</li>
+      <li><span class="highlighted">Control para administradores</span>: Cada banco decide si participa y con quién se alía.</li>
+    </ul>
+    <div class="slide-number">9</div>
+  </div>
+
+  <!-- Slide 10: Demostración -->
+  <div class="slide-container demo-slide">
+    <h2>Demostración en vivo de TimeOverflow</h2>
+    <p>Mejoras y nuevas funcionalidades</p>
+    <div class="video-container">
+      <video id="demoVideo" controls width="100%">
+        <source src="timeoverflow_1.mov" type="video/quicktime">
+        Tu navegador no soporta videos HTML5.
+      </video>
+      <button id="fullscreenBtn" class="fullscreen-button">Ver en pantalla completa</button>
+    </div>
+    <div class="slide-number">10</div>
+  </div>
+
+  <!-- Slide 11: Resultados y Conclusiones -->
+  <div class="slide-container">
+    <h2>Conclusiones</h2>
+    
+    <div class="conclusion-item">
+      <div class="conclusion-title">Plataforma más accesible</div>
+      <p>TimeOverflow ahora es usable para un público más amplio. Personas con discapacidad visual, auditiva o con menos alfabetización digital pueden participar sin dificultades.</p>
+    </div>
+    
+    <div class="conclusion-item">
+      <div class="conclusion-title">Colaboración ampliada</div>
+      <p>La funcionalidad de transferencias interbancarias ha sido implementada y probada con éxito. Bancos de tiempo antes aislados pueden conectarse y compartir servicios.</p>
+    </div>
+    
+    <div class="conclusion-item">
+      <div class="conclusion-title">Validación exitosa</div>
+      <p>Las mejoras fueron aceptadas en el repositorio oficial de TimeOverflow y validadas por coordinadores de bancos de tiempo.</p>
+    </div>
+    
+    <div class="conclusion-item">
+      <div class="conclusion-title">Dimensión social reforzada</div>
+      <p>El proyecto aporta valor al software libre y refuerza la misión social de los bancos de tiempo, contribuyendo a objetivos éticos y sociales como la reducción de desigualdades y el fortalecimiento de la cooperación local.</p>
+    </div>
+    <div class="slide-number">11</div>
+  </div>
+
+  <!-- Slide 12: Cierre -->
+  <div class="slide-container thanks-slide">
+    <h1>Gracias por su atención</h1>
+    <p>¿Preguntas?</p>
+    <div class="image-container">
+      <div class="image-placeholder">
+        [Imagen de colaboración / grupo de personas]
+      </div>
+    </div>
+    <div class="slide-number">12</div>
+  </div>
+
+  <!-- Scripts para la navegación y efectos -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Obtener todas las diapositivas
+      const slides = document.querySelectorAll('.slide-container');
+      let currentSlide = 0;
+      
+      // Mostrar la primera diapositiva
+      slides[currentSlide].classList.add('active');
+      updateProgressBar();
+      
+      // Animar los elementos de la lista con delay
+      animateListItems();
+      
+      // Función para navegar a la diapositiva anterior
+      function goToPrevSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide > 0) ? currentSlide - 1 : 0;
+        slides[currentSlide].classList.add('active');
+        updateProgressBar();
+        animateListItems();
+        scrollToTop();
+      }
+      
+      // Función para navegar a la diapositiva siguiente
+      function goToNextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : slides.length - 1;
+        slides[currentSlide].classList.add('active');
+        updateProgressBar();
+        animateListItems();
+        scrollToTop();
+      }
+      
+      // Actualizar la barra de progreso
+      function updateProgressBar() {
+        const progressPercentage = ((currentSlide + 1) / slides.length) * 100;
+        document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+      }
+      
+      // Animar los elementos de la lista
+      function animateListItems() {
+        const activeSlide = slides[currentSlide];
+        const listItems = activeSlide.querySelectorAll('li');
+        
+        listItems.forEach((item, index) => {
+          item.classList.remove('animated');
+          setTimeout(() => {
+            item.classList.add('animated');
+          }, 100 * index);
+        });
+      }
+      
+      // Volver al inicio de la página al cambiar diapositiva
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      
+      // Eventos para los botones de navegación
+      document.getElementById('prev-button').addEventListener('click', goToPrevSlide);
+      document.getElementById('next-button').addEventListener('click', goToNextSlide);
+      
+      // Navegación con teclado
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+          goToPrevSlide();
+        } else if (e.key === 'ArrowRight') {
+          goToNextSlide();
+        }
+      });
+      
+      // Cambiar al modo oscuro
+      document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+      });
+      
+      // Crear tooltips para términos técnicos
+      createTooltips();
+      function createTooltips() {
+        const terms = {
+          'accesibilidad': 'Diseño inclusivo que permite a todas las personas, independientemente de sus capacidades, utilizar una aplicación.',
+          'interoperabilidad': 'Capacidad de diferentes sistemas para trabajar juntos y compartir información.',
+          'TimeOverflow': 'Software de código abierto para gestionar bancos de tiempo desarrollado por la Asociación ADBdT.',
+          'bancos de tiempo': 'Sistemas de intercambio de servicios donde la unidad de valor es el tiempo, no el dinero.',
+          'código abierto': 'Software cuyo código fuente está disponible públicamente y puede ser modificado y compartido libremente.'
+        };
+        
+        document.querySelectorAll('p, li').forEach(element => {
+          Object.keys(terms).forEach(term => {
+            if (element.innerHTML.includes(term)) {
+              element.innerHTML = element.innerHTML.replace(
+                new RegExp(`(${term})`, 'gi'),
+                `<span class="tooltip">$1<span class="tooltip-text">${terms[term]}</span></span>`
+              );
+            }
+          });
+        });
+      }
+
+      // Funcionalidad de pantalla completa para el video
+      const demoVideo = document.getElementById('demoVideo');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      
+      if (fullscreenBtn && demoVideo) {
+        fullscreenBtn.addEventListener('click', function() {
+          if (demoVideo.requestFullscreen) {
+            demoVideo.requestFullscreen();
+          } else if (demoVideo.webkitRequestFullscreen) { /* Safari */
+            demoVideo.webkitRequestFullscreen();
+          } else if (demoVideo.msRequestFullscreen) { /* IE11 */
+            demoVideo.msRequestFullscreen();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
