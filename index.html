@@ -471,7 +471,7 @@
       <div class="column">
         <h3>Problemas detectados</h3>
         <ul>
-          <li><span class="highlighted">Accesibilidad limitada</span>: Personas mayores o con discapacidad encontraban barreras para usar la plataforma.</li>
+          <li><span class="highlighted">Sobrecarga operativa</span>: Los coordinadores de bancos de tiempo dedicaban excesivo tiempo a tareas administrativas manuales que podrían automatizarse.</li>
           <li><span class="highlighted">Bancos aislados</span>: Cada banco de tiempo en TimeOverflow funciona de forma independiente, sin opción de intercambio entre bancos distintos.</li>
         </ul>
       </div>
@@ -495,7 +495,7 @@
     <ol>
       <li><span class="highlighted">Analizar</span> la plataforma actual: comprender la arquitectura y revisar cómo funcionan las transacciones hoy.</li>
       <li><span class="highlighted">Diseñar</span> la función de transferencias entre bancos: estudiar la viabilidad y normas para intercambiar horas entre distintos bancos.</li>
-      <li><span class="highlighted">Implementar</span> mejoras de accesibilidad: aplicar estándares de diseño universal para que la plataforma sea usable por personas con discapacidad.</li>
+      <li><span class="highlighted">Aplicar</span> consideraciones de accesibilidad: integrar estándares WCAG 2.2 en todas las nuevas funcionalidades implementadas, asegurando navegabilidad completa por teclado, compatibilidad con lectores de pantalla y etiquetado semántico adecuado.</li>
       <li><span class="highlighted">Implementar</span> las transferencias interbancarias: desarrollar el mecanismo que permita transferir horas de un banco a otro.</li>
     </ol>
     <div class="slide-number">6</div>
@@ -539,73 +539,84 @@
     <div class="slide-number">7</div>
   </div>
 
-  <!-- Slide 8: Mejoras de Accesibilidad -->
+  <!-- Slide 8: Estudio de Usabilidad Realizado -->
   <div class="slide-container">
-    <h2>Mejoras de Accesibilidad</h2>
+    <h2>Estudio de Usabilidad Realizado</h2>
     <div class="two-column">
       <div class="column">
         <ul>
-          <li><span class="highlighted">Interfaz inclusiva</span>: Revisión del diseño UI para hacerlo más claro y sencillo. Se agregaron indicaciones y textos explicativos en funciones complejas.</li>
-          <li><span class="highlighted">Compatibilidad con asistentes</span>: Todos los nuevos componentes y páginas implementadas son compatibles con lectores de pantalla y dispositivos de asistencia.</li>
-          <li><span class="highlighted">Diseño adaptable</span>: La plataforma ahora responde mejor en distintos dispositivos y tamaños de pantalla (diseño responsive).</li>
+          <li><span class="highlighted">Metodología multidimensional</span>: Análisis documental del código existente, cognitive walkthrough contextual y mapeo de patrones de interacción.</li>
+          <li><span class="highlighted">Tareas críticas evaluadas</span>: Registro y adhesión, búsqueda de ofertas, publicación de servicios, transferencias y gestión de perfil.</li>
+          <li><span class="highlighted">Fortalezas identificadas</span>: Separación de identidades, onboarding progresivo, retroalimentación contextual y jerarquía visual.</li>
         </ul>
       </div>
       <div class="column">
         <ul>
-          <li><span class="highlighted">Pruebas de usabilidad</span>: Se realizaron pruebas con personas de perfiles variados (edades, capacidades tecnológicas).</li>
-          <li><span class="highlighted">Cumplimiento de estándares</span>: Las mejoras siguen pautas de accesibilidad web (WCAG 2.1 nivel AA), asegurando buenas prácticas en contraste de colores, tamaños de fuente legibles, navegación mediante teclado, etc.</li>
+          <li><span class="highlighted">Áreas de mejora</span>: Discontinuidad conceptual, falta de orientación post-registro, dependencia de vocabulario específico.</li>
+          <li><span class="highlighted">Propuesta de diseño</span>: Interfaces para interconexión basadas en principios de transparencia, control de privacidad y familiaridad de patrones.</li>
         </ul>
         <div class="image-container">
-          <div class="image-placeholder">
-            [Imagen: Elementos de accesibilidad implementados]
-          </div>
+          <img src="usabilidad.png" alt="Análisis de usabilidad por tarea" class="real-image">
         </div>
       </div>
     </div>
     <div class="slide-number">8</div>
   </div>
 
-  <!-- Slide 9: Funcionalidad de Transferencias Interbancarias -->
+  <!-- Slide 9: Arquitectura de TimeOverflow -->
   <div class="slide-container">
-    <h2>Nueva Funcionalidad: Transferencias entre Bancos de Tiempo</h2>
-    <div class="diagram-container">
-      <h3>Proceso en 4 fases:</h3>
-      
-      <div class="bank-flow">
-        <div class="bank">Banco A</div>
-        <div class="arrow">Fase 1: Solicitud de alianza</div>
-        <div class="bank">Banco B</div>
+    <h2>Arquitectura de TimeOverflow</h2>
+    <div class="two-column">
+      <div class="column">
+        <ul>
+          <li><span class="highlighted">Patrón MVC</span>: Ruby on Rails implementa Modelo (lógica de negocio), Vista (interfaz de usuario) y Controlador (intermediario) como componentes separados.</li>
+          <li><span class="highlighted">Arquitectura Multi-tenant</span>: Múltiples bancos de tiempo operan independientemente dentro de una única instalación compartida.</li>
+          <li><span class="highlighted">Separación lógica</span>: Los datos de cada banco están aislados mediante relaciones y filtros en el código, no mediante bases de datos separadas.</li>
+        </ul>
       </div>
-      
-      <div class="bank-flow">
-        <div class="bank">Miembro A</div>
-        <div class="arrow">Fase 2: Visualiza ofertas de B</div>
-        <div class="bank">Miembro B</div>
-      </div>
-      
-      <div class="bank-flow">
-        <div class="bank">Miembro A</div>
-        <div class="arrow">Fase 3: Solicitud de contacto</div>
-        <div class="bank">Miembro B</div>
-      </div>
-      
-      <div class="bank-flow">
-        <div class="bank">Miembro A</div>
-        <div class="arrow">Fase 4: Transferencia de 1h</div>
-        <div class="bank">Miembro B</div>
+      <div class="column">
+        <ul>
+          <li><span class="highlighted">Entidades clave</span>: Organizations (bancos), Users (personas), Members (pertenencia a un banco), Accounts (saldos) y Transfers (intercambios).</li>
+          <li><span class="highlighted">Flexibilidad</span>: Los usuarios pueden pertenecer a múltiples bancos con diferentes roles, manteniendo cuentas independientes en cada uno.</li>
+        </ul>
       </div>
     </div>
-    
-    <ul>
-      <li><span class="highlighted">Conexión entre bancos</span>: Sistema de "alianzas" entre bancos de tiempo.</li>
-      <li><span class="highlighted">Visibilidad compartida</span>: Miembros pueden ver ofertas y demandas del banco aliado.</li>
-      <li><span class="highlighted">Privacidad protegida</span>: Datos personales solo se comparten con consentimiento.</li>
-      <li><span class="highlighted">Control para administradores</span>: Cada banco decide si participa y con quién se alía.</li>
-    </ul>
+    <div class="image-container" style="margin-bottom: 30px;">
+      <img src="diagrama.png" alt="Diagrama MVC y estructura multi-tenant" class="real-image" style="max-width: 85%; max-height: 300px;">
+    </div>
     <div class="slide-number">9</div>
   </div>
 
-  <!-- Slide 10: Demostración -->
+  <!-- Slide 10: Funcionalidad de Transferencias Interbancarias -->
+  <div class="slide-container">
+    <h2>Nueva Funcionalidad: Transferencias entre Bancos de Tiempo</h2>
+    <div class="two-column">
+      <div class="column">
+        <h3 style="margin-top: 5px; margin-bottom: 10px; font-size: 18px;">Proceso en 4 fases:</h3>
+        <ul style="margin-top: 5px;">
+          <li style="margin-bottom: 8px;"><span class="highlighted">Fase 1:</span> Solicitud y aceptación de alianza</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Fase 2:</span> Visualización de ofertas</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Fase 3:</span> Solicitud de contacto</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Fase 4:</span> Transferencia de horas</li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3 style="margin-top: 5px; margin-bottom: 10px; font-size: 18px;">Características clave:</h3>
+        <ul style="margin-top: 5px;">
+          <li style="margin-bottom: 8px;"><span class="highlighted">Conexión controlada</span>: Sistema de alianzas</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Visibilidad compartida</span>: Acceso a ofertas</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Privacidad protegida</span>: Consentimiento</li>
+          <li style="margin-bottom: 8px;"><span class="highlighted">Control administrativo</span>: Decisión de colaboración</li>
+        </ul>
+      </div>
+    </div>
+    <div class="image-container" style="margin-top: 10px; margin-bottom: 10px;">
+      <img src="transferencia.png" alt="Diagrama de transferencia interbancaria" class="real-image" style="max-width: 100%; max-height: 380px;">
+    </div>
+    <div class="slide-number">10</div>
+  </div>
+
+  <!-- Slide 11: Demostración -->
   <div class="slide-container demo-slide">
     <h2>Demostración en vivo de TimeOverflow</h2>
     <p>Mejoras y nuevas funcionalidades</p>
@@ -616,10 +627,10 @@
       </video>
       <button id="fullscreenBtn" class="fullscreen-button">Ver en pantalla completa</button>
     </div>
-    <div class="slide-number">10</div>
+    <div class="slide-number">11</div>
   </div>
 
-  <!-- Slide 11: Resultados y Conclusiones -->
+  <!-- Slide 12: Resultados y Conclusiones -->
   <div class="slide-container">
     <h2>Conclusiones</h2>
     
@@ -642,10 +653,10 @@
       <div class="conclusion-title">Dimensión social reforzada</div>
       <p>El proyecto aporta valor al software libre y refuerza la misión social de los bancos de tiempo, contribuyendo a objetivos éticos y sociales como la reducción de desigualdades y el fortalecimiento de la cooperación local.</p>
     </div>
-    <div class="slide-number">11</div>
+    <div class="slide-number">12</div>
   </div>
 
-  <!-- Slide 12: Cierre -->
+  <!-- Slide 13: Cierre -->
   <div class="slide-container thanks-slide">
     <h1>Gracias por su atención</h1>
     <p>¿Preguntas?</p>
@@ -654,7 +665,7 @@
         [Imagen de colaboración / grupo de personas]
       </div>
     </div>
-    <div class="slide-number">12</div>
+    <div class="slide-number">13</div>
   </div>
 
   <!-- Scripts para la navegación y efectos -->
